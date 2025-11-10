@@ -8,6 +8,7 @@ export { Button } from './Button/Button';
 export { Toaster } from './Toaster';
 export { Sheet } from './Sheet';
 export { SheetContent } from './Sheet';
+export { FaviconImage } from './FaviconImage';
 
 // Dropdown Menu Components
 export { DropdownMenu, DropdownMenuPortal } from './Dropdown/DropdownMenu';

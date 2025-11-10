@@ -1,7 +1,7 @@
 import { BarChart3, MessageSquare, Globe2, Zap, Swords, Settings, CreditCard, Briefcase } from 'lucide-react';
-// import { WorkspaceSwitcher } from '@/components/common/workspace-switcher';
-import { ThemeSwitcher } from '@/shared/components';
-import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, NavMain, NavUser } from '@/shared/components';
+import { WorkspaceSwitcher } from '@/features/workspace/components/workspace-switcher';
+import { ThemeSwitcher, Sidebar, SidebarContent, SidebarFooter, SidebarHeader, NavMain } from '@/shared/components';
+import { NavUser } from '@/features/auth/components';
 
 const data = {
   // Main navigation group (merged with preferences)
@@ -55,7 +55,9 @@ const data = {
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
     <Sidebar collapsible="icon" {...props}>
-      <SidebarHeader>{/* <WorkspaceSwitcher /> */}sss</SidebarHeader>
+      <SidebarHeader>
+        <WorkspaceSwitcher />
+      </SidebarHeader>
       <SidebarContent>
         <NavMain mainNav={data.mainNav} settings={data.settings} />
       </SidebarContent>

@@ -5,7 +5,6 @@
 export { Nudg3Logo } from './Nudg3Logo';
 export { NavMain } from './NavMain';
 export { ThemeSwitcher } from './ThemeSwitcher';
-export { NavUser } from './NavUser';
 export { ChangePasswordDialog } from './ChangePasswordDialog';
 
 // Sidebar

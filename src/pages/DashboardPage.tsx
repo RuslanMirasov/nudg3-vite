@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useMemo } from 'react';
 import { TooltipProvider, DashboardFilters, FullPageLoading } from '@/shared/components';
 import { getDateRange } from '@/shared/lib/utils/date-utils';
 import { useWorkspace } from '@/features/workspace/hooks/useWorkspace';
@@ -18,7 +18,7 @@ import type { APIRecentChat } from '@/features/dashboard/components/RecentPrompt
 export function DashboardPage() {
   const router = useRouter();
   const { selectedWorkspace, isLoading: isWorkspaceLoading } = useWorkspace();
-  const [hasCheckedPrimaryBrand, setHasCheckedPrimaryBrand] = useState(false);
+  //const [hasCheckedPrimaryBrand, setHasCheckedPrimaryBrand] = useState(false);
   const [additionalBrands, setAdditionalBrands] = useState<
     Record<
       string,

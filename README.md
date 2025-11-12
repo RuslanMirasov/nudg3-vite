@@ -1,145 +1,134 @@
-# 🧾 Отчёт о техническом прогрессе проекта
+# 🧾 Project Technical Progress Report
 
-Данный документ описывает текущее состояние проекта после проведённого рефакторинга и устранения технических проблем, перечисленных в исходном
-техническом долге. Все пункты соответствуют оригинальной нумерации задач.
+This document describes the current state of the project following the refactoring and the resolution of technical issues listed in the original
+technical debt. All items correspond to the original task numbering.
 
 <br>
 <br>
 
 ## 1. Wasteful Next.js Usage
 
-<b>Статус:</b> ✅ Исправлено
+<b>Status:</b> ✅ Fixed
 
-Проект полностью переведён с <b>Next.js</b> на <b>Vite 7 + React 19</b>, что устранило избыточную серверную инфраструктуру. Теперь используется
-<b>SPA-архитектура</b> с клиентской маршрутизацией через <b>TanStack Router</b> и управлением данными через <b>TanStack React Query</b>.
+The project has been fully migrated from <b>Next.js</b> to <b>Vite 7 + React 19</b>, which eliminated the redundant server infrastructure. It now uses
+an <b>SPA architecture</b> with client-side routing via <b>TanStack Router</b> and data management through <b>TanStack React Query</b>.
 
-### Результат:
+### Result:
 
-- Время сборки и размер бандла значительно снижены.
-- Убраны неиспользуемые SSR-механизмы.
-- Кодовая база стала проще, а навигация — типобезопасной.
+- Build time and bundle size have been significantly reduced.
+- Unused SSR mechanisms have been removed.
+- The codebase has become simpler, and navigation is now type-safe.
 
 <br>
 <br>
 
 ## 2. Over-fetching & Multiple API Calls
 
-<b>Статус:</b> ✅ Исправлено
+<b>Status:</b> ✅ Fixed
 
-Все разрозненные вызовы <b>fetch()</b> заменены на единый слой <b>API</b> через <b>Axios</b> `(apiClient.ts)`.
+All scattered <b>fetch()</b> calls have been replaced with a unified <b>API</b> layer using <b>Axios</b> `apiClient.ts`
 
-### Добавлены:
+### Added:
 
-- Централизованный базовый URL и заголовки;
-- Перехватчики запросов и ответов (инъекция токена, обработка 401);
-- Типизированные методы `api.get/post/put/delete`.
+- Centralized base URL and headers;
+- Request and response interceptors (token injection, 401 handling);
+- Typed methods `api.get/post/put/delete`.
 
-### Результат:
+### Result:
 
-- Устранено дублирование запросов;
-- Кэширование данных реализовано через <b>React Query<b> `(staleTime: 5 минут)`;
-- Повторных вызовов `/auth/me` при переходах больше нет.
+- Request duplication eliminated;
+- Data caching implemented via <b>React Query</b> `(staleTime: 5 minutes)`;
+- No more repeated `/auth/me calls` during navigation.
 
 <br>
 <br>
 
 ## 3. Context API Overuse
 
-<b>Статус:</b> ✅ Исправлено
+<b>Status:</b> ✅ Fixed
 
-Старая модель авторизации на <b>Context + useState</b> заменена на гибрид <b>React Query + Context</b>.
+The old authorization model based on <b>Context + useState</b> has been replaced with a hybrid of <b>React Query + Context</b>.
 
-### Теперь:
+### Now:
 
-- пользователь кэшируется в запросе `['currentUser']`;
-- `AuthProvider` стал тонким слоем управления сессией;
-- обновление и выход происходят через кэш <b>React Query</b>, без ручного состояния.
+- The user is cached in the `['currentUser']` query;
+- AuthProvider has become a thin session management layer;
+- Updates and logout are handled through the <b>React Query</b> cache.
 
 <br>
 <br>
 
 ## 4. Filter Persistence (or Lack Thereof)
 
-<b>Статус:</b> ⚙️ В процессе
+<b>Status:</b> ⚙️ Partial
 
-Механизм сохранения фильтров в URL или локальном состоянии пока не реализован. Предусмотрено использование React Router searchParams, но потребуется
-дополнительная интеграция на уровне Dashboard-страниц.
+The mechanism for saving filters in the URL has not yet been implemented.
 
 <br>
 <br>
 
 ## 5. Large Component Files
 
-<b>Статус:</b> ⚙️ Частично решено
+<b>Status:</b> ⚙️ Partial
 
-Основная архитектура компонентов упрощена, общие layout-части вынесены в `AppLayout`, а бизнес-логика — в `features`. Тем не менее, некоторые страницы
-(например, Dashboard или Workspaces) нуждаются в декомпозиции.
+The main component architecture has been simplified: shared layout parts have been moved to `AppLayout`, and business logic to `features`. However,
+some pages (for example, Dashboard) and some components still require further decomposition.
 
 <br>
 <br>
 
 ## 6. Inconsistent Error Handling
 
-<b>Статус:</b> ✅ Исправлено
+<b>Status:</b> ⚙️ Partial
 
-Все ошибки теперь обрабатываются централизованно в Axios-перехватчиках. Удалён устаревший `ApiError` класс. Ошибки API теперь возвращаются в
-унифицированном формате и корректно логируются.
+All errors are now handled centrally in Axios interceptors. The deprecated `ApiError` class has been removed. Preparation for displaying notifications
+`(toast)` has been completed for future implementation.
 
-### Результат:
+### Result:
 
-- Единая обработка ошибок на уровне приложения;
-- Чистый код без дублирования `try/catch`;
-- Подготовка к показу уведомлений `(toast)` в будущем.
+- Unified error handling at the application level;
+- Clean code without duplicated `try/catch` blocks;
 
 <br>
 <br>
 
 ## 7. TypeScript: Too Strict or Too Loose?
 
-<b>Статус:</b> ✅ Исправлено
+<b>Status:</b> ✅ Fixed
 
-Включён строгий режим компилятора `("strict": true)`. Активированы флаги: `noUncheckedIndexedAccess`, `exactOptionalPropertyTypes`,
-`noImplicitOverride`, `noUnusedLocals`, `noUnusedParameters`.
+The TypeScript compiler is now running in strict mode with enhanced linting rules for cleaner, safer code. Warnings are used instead of hard errors
+for potentially unsafe patterns — for example, the any type triggers a warning rather than blocking the build. This approach enforces type safety and
+best practices while keeping the development process smooth and non-disruptive.
 
-### Результат:
-
-- Все API-ответы типизированы через интерфейсы;
-- Исключены неявные `any`;
-- Безопасное автодополнение в `IDE`.
+Active compiler and linting flags include: `"strict"`, `"noUnusedLocals"`, `"noUnusedParameters"`, `"noUncheckedSideEffectImports"`,
+`"noImplicitReturns"`, `"noUncheckedIndexedAccess"`, `"noImplicitOverride"`, `"noPropertyAccessFromIndexSignature"`, and others.
 
 <br>
 <br>
 
 ## 8. Performance: Unnecessary Re-renders
 
-<b>Статус:</b> ✅ Исправлено
+<b>Status:</b> ✅ Fixed
 
-Основная причина лишних перерисовок `(Context-переменные)` устранена. `React Query` теперь обновляет только те компоненты, которые подписаны на
-конкретные данные. Используются `useCallback` и `memo`-паттерны для оптимизации.
+The main cause of unnecessary re-renders `(Context variables)` has been eliminated. `React Query` now updates only those components that subscribe to
+specific data.
 
 <br>
 <br>
 
 ## 9. No Testing
 
-<b>Статус:</b> ❌ Не реализовано
+<b>Status:</b> ❌ Not implemented
 
-Автоматические тесты (unit и integration) пока отсутствуют. Запланировано внедрение `Vitest` или `Jest` после завершения оптимизаций бизнес-логики.
+Automated tests (unit and integration) are not yet in place. Implementation of `Vitest` or `Jest` is planned after completing business logic
+optimizations.
 
 <br>
 <br>
 
 ## 10. Accessibility Concerns
 
-<b>Статус:</b> ⚙️ В процессе
-
-Базовые правила доступности включены (eslint-plugin-jsx-a11y):
-
-- alt-text,
-- anchor-is-valid,
-- click-events-have-key-events.
-
-Планируется расширение покрытия (лейблы, фокус, контрастность).
+Basic accessibility rules have been enabled `(eslint-plugin-jsx-a11y)`:
 
 <br>
 <br>
@@ -235,38 +224,25 @@ clarity and consistency across the codebase.
 
 ## 12. Environment Configuration
 
-<b>Статус:</b> ✅ Исправлено
+<b>Status:</b> ✅ Fixed
 
-Добавлены и документированы переменные окружения:
+Environment variables have been added and documented:
 
-- шаблон `.env.example` с пометками `[REQUIRED]` / `[OPTIONAL]`;
-- файл `config/validate-env.ts` выполняет проверку обязательных переменных при старте сборки.
+- `.env.example` template with `[REQUIRED]` / `[OPTIONAL]` labels;
+- `config/validate-env.ts` file validates required variables at build startup.
 
-### Результат:
+### Result:
 
-- Приложение не запускается без критических конфигураций;
-- Логика проверки выводит инструкции в консоль;
-- Среда разработки унифицирована для всей команды.
+- The application does not start without critical configurations;
+- The validation logic outputs clear instructions to the console;
+- The development environment is now unified across the entire team.
 
 <br>
 <br>
 <br>
 
-# 📊 Итоговое состояние
+# 📊 Final Status
 
-```
-| Категория              | Статус
-| ---------------------- | ----------------------------------
-| Архитектура и сборка   | ✅ Полностью перенесено на Vite
-| API слой               | ✅ Централизован и типизирован
-| Авторизация и сессии   | ✅ Оптимизировано через React Query
-| Типизация              | ✅ Строгая, без `any`
-| Ошибки и обработка     | ✅ Единообразно
-| Производительность     | ✅ Улучшена
-| ESLint и правила       | ✅ Современный Flat Config
-| Доступность            | ⚙️ В процессе
-| Тестирование           | ❌ Не реализовано
-| Конфигурация окружения | ✅ Валидируется и документирована
-```
+So-so… ))
 
 //131fa496-5375-4c7c-9195-5cdf9a1daa0b

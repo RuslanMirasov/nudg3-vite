@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Slot } from '@radix-ui/react-slot';
 import { cn } from '@/shared/lib/cn';
-//import { useSidebar } from '@/shared/components';
+import { useSidebar, Tooltip, TooltipTrigger, TooltipContent } from '@/shared/components';
 
 export function SidebarMenu({ className, ...props }: React.ComponentProps<'ul'>) {
   return <ul data-sidebar="menu" className={cn('flex w-full min-w-0 flex-col gap-1', className)} {...props} />;
@@ -27,7 +27,7 @@ export function SidebarMenuButton({
   size?: 'default' | 'sm' | 'lg';
 }) {
   const Comp = asChild ? Slot : 'button';
-  //const { isMobile, state } = useSidebar();
+  const { isMobile, state } = useSidebar();
 
   const button = (
     <Comp
@@ -56,7 +56,12 @@ export function SidebarMenuButton({
     };
   }
 
-  return button;
+  return (
+    <Tooltip>
+      <TooltipTrigger asChild>{button}</TooltipTrigger>
+      <TooltipContent side="right" align="center" hidden={state !== 'collapsed' || isMobile} {...tooltip} />
+    </Tooltip>
+  );
 }
 
 export function SidebarMenuAction({

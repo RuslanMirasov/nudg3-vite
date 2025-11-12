@@ -18,6 +18,7 @@ import type { APIRecentChat } from '@/features/dashboard/components/RecentPrompt
 export function DashboardPage() {
   const router = useRouter();
   const { selectedWorkspace, isLoading: isWorkspaceLoading } = useWorkspace();
+  const [hasCheckedPrimaryBrand, setHasCheckedPrimaryBrand] = useState(false);
   const [additionalBrands, setAdditionalBrands] = useState<
     Record<
       string,
@@ -135,22 +136,67 @@ export function DashboardPage() {
   // ============================================================================
   // AUTOSELECT PRIMARY BRAND
   // ============================================================================
-  useEffect(() => {
-    if (!filterOptionsData?.brands || filterOptionsData.brands.length === 0) return;
-    if (selectedBrand) return;
 
-    const primaryBrand = filterOptionsData.brands.find(b => b.is_primary_brand);
+  // useEffect(() => {
+  //   if (!filterOptionsData?.brands || filterOptionsData.brands.length === 0) return;
+  //   if (selectedBrand) return;
 
-    if (primaryBrand) {
-      const primaryValue = primaryBrand.name.toLowerCase().replace(/\s+/g, '-');
-      setSelectedBrand(primaryValue);
-    } else {
-      const firstBrand = filterOptionsData.brands[0];
-      if (firstBrand) {
-        setSelectedBrand(firstBrand.name.toLowerCase().replace(/\s+/g, '-'));
-      }
-    }
-  }, [filterOptionsData?.brands, selectedBrand, setSelectedBrand, selectedWorkspace?.id]);
+  //   const primaryBrand = filterOptionsData.brands.find(b => b.is_primary_brand);
+
+  //   if (primaryBrand) {
+  //     const primaryValue = primaryBrand.name.toLowerCase().replace(/\s+/g, '-');
+  //     setSelectedBrand(primaryValue);
+  //   } else {
+  //     const firstBrand = filterOptionsData.brands[0];
+  //     if (firstBrand) {
+  //       setSelectedBrand(firstBrand.name.toLowerCase().replace(/\s+/g, '-'));
+  //     }
+  //   }
+  // }, [filterOptionsData?.brands, selectedBrand, setSelectedBrand, selectedWorkspace?.id]);
+
+  // useEffect(() => {
+  //   // Only run this check once when dashboard data is loaded and we have filter options
+  //   if (!dashboardData?.data.brands || !filterOptionsData?.brands || hasCheckedPrimaryBrand) {
+  //     return;
+  //   }
+
+  //   const primaryBrand = filterOptionsData.brands.find(brand => brand.is_primary_brand);
+  //   if (!primaryBrand) {
+  //     setHasCheckedPrimaryBrand(true);
+  //     return;
+  //   }
+
+  //   const primaryBrandValue = primaryBrand.name.toLowerCase().replace(/\s+/g, '-');
+  //   const currentBrands = Object.keys(dashboardData.data.brands);
+  //   const isPrimaryBrandInTop5 = currentBrands.some(brandName => brandName.toLowerCase().replace(/\s+/g, '-') === primaryBrandValue);
+
+  //   // If primary brand is not in top 5, fetch its data
+  //   if (!isPrimaryBrandInTop5) {
+  //     console.log(`Primary brand ${primaryBrand.name} not in top 5, fetching its data...`);
+
+  //     const fetchPrimaryBrandData = async () => {
+  //       try {
+  //         const brandAnalytics = await analyticsApi.getSpecificBrandAnalytics({
+  //           workspace_id: selectedWorkspace!.id,
+  //           brand_id: primaryBrand.id,
+  //           ...dateRange,
+  //           models: selectedModels.length > 0 ? selectedModels : undefined,
+  //           tags: selectedTags.length > 0 ? selectedTags : undefined,
+  //         });
+
+  //         // Add primary brand data as 6th entry
+  //         setAdditionalBrands(brandAnalytics.data.brands);
+  //         console.log(`Successfully loaded primary brand data:`, brandAnalytics.data.brands);
+  //       } catch (err) {
+  //         console.error('Failed to load primary brand analytics:', err);
+  //       }
+  //     };
+
+  //     fetchPrimaryBrandData();
+  //   }
+
+  //   setHasCheckedPrimaryBrand(true);
+  // }, [dashboardData?.data.brands, filterOptionsData?.brands, hasCheckedPrimaryBrand, selectedWorkspace, dateRange, selectedModels, selectedTags]);
 
   // ============================================================================
   // EVENT HANDLERS

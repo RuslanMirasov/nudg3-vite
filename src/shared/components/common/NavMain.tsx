@@ -12,20 +12,26 @@ export function NavMain({ mainNav, settings, currentPath }: { mainNav: NavItem[]
   const renderNavItems = (items: NavItem[]) => {
     return items.map(item => {
       const isActive = currentPath === item.url;
+
       return (
         <SidebarMenuItem key={item.title}>
           <SidebarMenuButton asChild tooltip={item.title} isActive={isActive}>
             <Link
               to={item.url}
+              activeProps={{
+                className: 'bg-sidebar-accent text-sidebar-accent-foreground [&_svg]:text-sidebar-accent-foreground dark:bg-[#2A2A2A]',
+              }}
               className={`text-sm font-normal tracking-wide transition-all duration-200 ease-in-out rounded-md px-3 py-2 group ${
                 isActive ? 'bg-accent' : ''
               }`}
             >
               {item.icon && (
                 <item.icon
-                  className={`h-4 w-4 shrink-0 transition-transform duration-200 ${
-                    isActive ? 'text-black dark:text-white' : 'text-gray-400 dark:text-[#C4C4C4]'
-                  }`}
+                  className="
+                  h-4 w-4 shrink-0 transition-colors duration-200
+                  text-gray-400 dark:text-[#C4C4C4]
+                  group-data-[state=collapsed]:mx-auto
+                "
                 />
               )}
               <span className="font-medium text-foreground">{item.title}</span>

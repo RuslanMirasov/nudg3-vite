@@ -1,5 +1,4 @@
 import { useState } from 'react';
-// import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 //import { IconKey, IconEye, IconEyeOff } from '@tabler/icons-react';
 import { Key, Eye, EyeOff } from 'lucide-react';
 import { authApi } from '@/features/auth/lib/api';

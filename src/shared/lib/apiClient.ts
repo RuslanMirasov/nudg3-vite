@@ -10,7 +10,7 @@ export const apiClient: AxiosInstance = axios.create({
   headers: {
     'Content-Type': 'application/json',
   },
-  timeout: 15000,
+  timeout: 20000,
 });
 
 apiClient.interceptors.request.use(config => {
@@ -50,6 +50,11 @@ export const api = {
 
   put: async <T, B = unknown>(url: string, body?: B): Promise<T> => {
     const { data } = await apiClient.put<T>(url, body);
+    return data;
+  },
+
+  patch: async <T, B = unknown>(url: string, body?: B): Promise<T> => {
+    const { data } = await apiClient.patch<T>(url, body);
     return data;
   },
 

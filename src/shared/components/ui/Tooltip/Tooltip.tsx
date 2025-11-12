@@ -1,0 +1,10 @@
+import * as TooltipPrimitive from '@radix-ui/react-tooltip';
+import { TooltipProvider } from './TooltipProvider';
+
+export function Tooltip({ ...props }: React.ComponentProps<typeof TooltipPrimitive.Root>) {
+  return (
+    <TooltipProvider>
+      <TooltipPrimitive.Root data-slot="tooltip" {...props} />
+    </TooltipProvider>
+  );
+}

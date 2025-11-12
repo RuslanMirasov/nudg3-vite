@@ -2,10 +2,12 @@
 // COMMON COMPONENTS
 //-------------------------------------------------------------------------------
 
-export { Nudg3Logo } from './Nudg3Logo';
+export { Nudg3Logo } from './Logos/Nudg3Logo';
+export { getAIModelIcon } from './Logos/AiLogos';
 export { NavMain } from './NavMain';
 export { ThemeSwitcher } from './ThemeSwitcher';
-export { ChangePasswordDialog } from './ChangePasswordDialog';
+export { FullPageLoading } from './FullPageLoading';
+export { DashboardFilters } from './DashboardFilters';
 
 // Sidebar
 export { AppSidebar } from './AppSidebar';

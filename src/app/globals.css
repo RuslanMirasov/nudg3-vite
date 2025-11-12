@@ -153,10 +153,6 @@
   }
 }
 
-body > * {
-  transition: background-color 0.3s, color 0.3s;
-}
-
 /* Line clamp utilities - Keep as Tailwind doesn't have all variants */
 .line-clamp-1 {
   overflow: hidden;

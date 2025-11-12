@@ -2,6 +2,7 @@ import { useState } from 'react';
 //import { IconLogout, IconKey, IconDotsVertical } from '@tabler/icons-react';
 import { LogOut, Key, MoreVertical } from 'lucide-react';
 import { useAuth } from '@/features/auth/hooks/useAuth';
+import { ChangePasswordDialog } from '@/features/auth/components';
 
 import {
   DropdownMenu,
@@ -13,7 +14,6 @@ import {
   SidebarMenuItem,
   Avatar,
   AvatarFallback,
-  ChangePasswordDialog,
 } from '@/shared/components';
 
 export function NavUser() {

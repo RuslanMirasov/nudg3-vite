@@ -1,8 +1,10 @@
-import { createRouter, createRootRoute, createRoute, redirect, Outlet } from '@tanstack/react-router';
+import { createRouter, createRootRouteWithContext, createRoute, redirect, Outlet } from '@tanstack/react-router';
 import { tokenStorage } from '@/features/auth/lib/token-storage';
+import type { RouterContext } from '@/shared/types/react-router';
 
 //Layouts
 import AppLayout from '@/shared/layouts/AppLayout';
+import OnBoardingLayout from '@/shared/layouts/OnBoardingLayout';
 
 // Pages
 import {
@@ -15,6 +17,7 @@ import {
   WorkspacesPage,
   WorkspaceSettingsPage,
   BillingPage,
+  OnBoardingSetupPage,
 } from '@/pages';
 
 const privatePages = [
@@ -28,13 +31,15 @@ const privatePages = [
   { path: '/billing', component: BillingPage },
 ] as const;
 
+const onboardPages = [{ path: '/onboarding/setup', component: OnBoardingSetupPage }] as const;
+
 const checkAuth = () => {
   const token = tokenStorage.getToken();
   if (!token || tokenStorage.isTokenExpired()) return false;
   return true;
 };
 
-const redirectTo = (location: { pathname: string }) => {
+const redirectTo = async (location: { pathname: string }) => {
   if (!checkAuth()) {
     throw redirect({
       to: '/login',
@@ -43,15 +48,16 @@ const redirectTo = (location: { pathname: string }) => {
   }
 };
 
-const rootRoute = createRootRoute({
+const rootRoute = createRootRouteWithContext<RouterContext>()({
   component: () => <Outlet />,
 });
 
-// Privat route
 const privatRoute = createRoute({
   getParentRoute: () => rootRoute,
   id: 'layout',
-  beforeLoad: ({ location }) => redirectTo(location),
+  async beforeLoad({ location }) {
+    await redirectTo(location);
+  },
   component: AppLayout,
 });
 
@@ -63,7 +69,24 @@ const privateRoutes = privatePages.map(({ path, component }) =>
   })
 );
 
-// Login page
+const onboardingPrivatRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  id: 'onboarding-layout',
+  async beforeLoad({ location }) {
+    await redirectTo(location);
+  },
+  component: OnBoardingLayout,
+});
+
+const onboardingRoutes = onboardPages.map(({ path, component }) =>
+  createRoute({
+    getParentRoute: () => onboardingPrivatRoute,
+    path,
+    component,
+  })
+);
+
+// Login
 const loginRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/login',
@@ -78,8 +101,8 @@ const loginRoute = createRoute({
   component: LoginPage,
 });
 
-// Create route tree
-const routeTree = rootRoute.addChildren([privatRoute.addChildren(privateRoutes), loginRoute]);
+// --- Route tree
+const routeTree = rootRoute.addChildren([privatRoute.addChildren(privateRoutes), onboardingPrivatRoute.addChildren(onboardingRoutes), loginRoute]);
 
 export const router = createRouter({
   routeTree,

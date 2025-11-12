@@ -24,8 +24,8 @@ export interface GetDashboardParams {
   workspace_id: string;
   start_date?: string;
   end_date?: string;
-  models?: string[] | undefined;
-  tags?: string[] | undefined;
+  models?: string[] | string | undefined;
+  tags?: string[] | string | undefined;
   [key: string]: unknown;
 }
 export interface GetPromptsParams {

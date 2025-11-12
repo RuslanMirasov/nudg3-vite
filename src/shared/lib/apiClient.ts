@@ -10,6 +10,23 @@ export const apiClient: AxiosInstance = axios.create({
   headers: {
     'Content-Type': 'application/json',
   },
+  paramsSerializer: params => {
+    const searchParams = new URLSearchParams();
+
+    for (const key in params) {
+      const value = params[key];
+      if (value === undefined || value === null) continue;
+      if (Array.isArray(value)) {
+        for (const v of value) {
+          if (v != null) searchParams.append(key, String(v));
+        }
+      } else if (value != null) {
+        searchParams.append(key, String(value));
+      }
+    }
+
+    return searchParams.toString();
+  },
   timeout: 20000,
 });
 

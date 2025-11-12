@@ -1,8 +1,7 @@
 import { useState } from 'react';
 //import { IconKey, IconEye, IconEyeOff } from '@tabler/icons-react';
 import { Key, Eye, EyeOff } from 'lucide-react';
-import { authApi } from '@/features/auth/lib/api';
-import { tokenStorage } from '@/features/auth/lib/token-storage';
+import { authApi } from '@/features/auth/api/auth-api';
 import { useAuth } from '@/features/auth/hooks/useAuth';
 import { toast } from 'sonner';
 import { Button, Input, Label, Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/shared/components';
@@ -82,13 +81,7 @@ export function ChangePasswordDialog({ open, onOpenChange }: ChangePasswordDialo
 
     setIsLoading(true);
     try {
-      const token = tokenStorage.getToken();
-      if (!token) {
-        toast.error('No authentication token found');
-        return;
-      }
-
-      await authApi.changePassword(token, {
+      await authApi.changePassword({
         current_password: passwords.currentPassword,
         new_password: passwords.newPassword,
       });

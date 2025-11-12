@@ -57,7 +57,6 @@ import type {
 
 export const analyticsApi = {
   // GET REQUESTS
-  //https://nudg3-backend-hiring-9223603455.us-central1.run.app/analytics/brand/f33e84cc-cf8f-4fad-87fb-ea3f32821200?params%5Bworkspace_id%5D=c42ac61a-7dda-41b3-a30a-5a7c6ac0b32f&params%5Bbrand_id%5D=f33e84cc-cf8f-4fad-87fb-ea3f32821200&params%5Bstart_date%5D=2025-11-04&params%5Bend_date%5D=2025-11-11
   getFilterOptions: (params: GetFilterOptionsParams) => api.get<FilterOptionsResponse>('/analytics/filters', params),
 
   getDashboard: (params: GetDashboardParams) => api.get<DashboardAnalytics>('/analytics/dashboard', params),

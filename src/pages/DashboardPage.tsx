@@ -1,5 +1,5 @@
-import { useState, useMemo } from 'react';
-import { Skeleton, TooltipProvider, DashboardFilters } from '@/shared/components';
+import { useState, useEffect, useMemo } from 'react';
+import { TooltipProvider, DashboardFilters, FullPageLoading } from '@/shared/components';
 import { getDateRange } from '@/shared/lib/utils/date-utils';
 import { useWorkspace } from '@/features/workspace/hooks/useWorkspace';
 import { useRouter } from '@tanstack/react-router';
@@ -44,7 +44,7 @@ export function DashboardPage() {
   } = useDashboardFilters(selectedWorkspace?.id);
 
   const dateRange = useMemo(() => getDateRange(selectedTimeRange, customDateRange), [selectedTimeRange, customDateRange]);
-  const { data: filterOptionsData, isLoading: isFilterOptionsLoading } = useFilterOptions(selectedWorkspace?.id || null);
+  const { data: filterOptionsData } = useFilterOptions(selectedWorkspace?.id || null);
 
   // Fetch dashboard data with filters
   const {
@@ -58,7 +58,7 @@ export function DashboardPage() {
     tags: selectedTags.length > 0 ? selectedTags : undefined,
   });
 
-  // Генерация filtersData (чистая версия без зависимостей от дашборда)
+  // filtersData
   const filtersData = useMemo(() => {
     const timeRangeOptions = [
       { value: '7', label: 'Last 7 days' },
@@ -131,6 +131,26 @@ export function DashboardPage() {
       },
     };
   }, [dashboardData, additionalBrands]);
+
+  // ============================================================================
+  // AUTOSELECT PRIMARY BRAND
+  // ============================================================================
+  useEffect(() => {
+    if (!filterOptionsData?.brands || filterOptionsData.brands.length === 0) return;
+    if (selectedBrand) return;
+
+    const primaryBrand = filterOptionsData.brands.find(b => b.is_primary_brand);
+
+    if (primaryBrand) {
+      const primaryValue = primaryBrand.name.toLowerCase().replace(/\s+/g, '-');
+      setSelectedBrand(primaryValue);
+    } else {
+      const firstBrand = filterOptionsData.brands[0];
+      if (firstBrand) {
+        setSelectedBrand(firstBrand.name.toLowerCase().replace(/\s+/g, '-'));
+      }
+    }
+  }, [filterOptionsData?.brands, selectedBrand, setSelectedBrand, selectedWorkspace?.id]);
 
   // ============================================================================
   // EVENT HANDLERS
@@ -224,18 +244,10 @@ export function DashboardPage() {
     router.navigate({ to: `/prompts/${promptTemplateId}/analysis?responseId=${providerResponseId}` });
   };
 
-  console.log(additionalBrands);
-  console.log(isFilterOptionsLoading);
-
   if (isWorkspaceLoading) {
     return (
       <TooltipProvider>
-        <div className="flex-1 p-2 md:p-4 flex items-center justify-center">
-          <div className="flex flex-col items-center gap-4">
-            <Skeleton className="h-12 w-48" />
-            <p className="text-sm text-muted-foreground">Loading workspace...</p>
-          </div>
-        </div>
+        <FullPageLoading message="Loading workspace..." />
       </TooltipProvider>
     );
   }
@@ -243,11 +255,7 @@ export function DashboardPage() {
   if (!selectedWorkspace) {
     return (
       <TooltipProvider>
-        <div className="flex-1 p-2 md:p-4 flex items-center justify-center">
-          <div className="flex flex-col items-center gap-4">
-            <p className="text-sm text-muted-foreground">No workspace selected. Redirecting...</p>
-          </div>
-        </div>
+        <FullPageLoading message="No workspace selected. Redirecting..." />
       </TooltipProvider>
     );
   }
@@ -273,7 +281,6 @@ export function DashboardPage() {
         {/* <TrialStatusBanner /> */}
 
         <div className="space-y-2 md:space-y-3">
-          {/* TODO: BrandsChartWithTable */}
           <BrandsChartWithTable
             data={enhancedDashboardData}
             selectedTimeRange={selectedTimeRange}
@@ -283,14 +290,12 @@ export function DashboardPage() {
             customDateRange={customDateRange}
             isLoading={isLoading}
             isRefreshing={isRefreshing}
-            // Add export-related props
             startDate={dateRange?.start_date ? new Date(dateRange.start_date) : undefined}
             endDate={dateRange?.end_date ? new Date(dateRange.end_date) : undefined}
           />
 
           <div className="flex gap-2 md:gap-3 flex-col md:flex-row h-auto">
             <div className="w-full md:w-2/3 flex flex-col">
-              {/* TODO: RecentPromptsResponseList */}
               <RecentPromptsResponseList
                 data={dashboardData?.data.recent_chats || []}
                 isLoading={isLoading}

@@ -1,5 +1,3 @@
-//131fa496-5375-4c7c-9195-5cdf9a1daa0b
-
 import { useEffect } from 'react';
 import { useNavigate } from '@tanstack/react-router';
 import { useQuery } from '@tanstack/react-query';
